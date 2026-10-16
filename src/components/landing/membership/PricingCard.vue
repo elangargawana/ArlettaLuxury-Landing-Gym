@@ -1,0 +1,61 @@
+<script setup lang="ts">
+import Button from 'primevue/button'
+// import authState from '@/stores/auth' // tidak diperlukan; pembelian via WhatsApp
+
+const props = defineProps({
+  plan: { type: Object, required: true },
+  showCta: { type: Boolean, default: true },
+})
+const emit = defineEmits(['signup'])
+
+const formatPrice = (price: number) =>
+  new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(price)
+
+const onSignup = () => {
+  emit('signup', props.plan)
+}
+</script>
+
+<template>
+  <div
+    v-animateonscroll="{ enterClass: 'animate-scalein', leaveClass: 'animate-fadeout' }"
+    class="glass-card p-6 md:p-8 rounded-2xl border-2 border-(--primary) relative flex flex-col h-full"
+  >
+    <div class="text-center mb-8">
+      <h3 class="text-2xl md:text-3xl font-bold text-white mb-2">{{ props.plan.name }}</h3>
+      <p class="text-(--text-muted) text-sm mb-4">{{ props.plan.description }}</p>
+
+      <div class="flex items-baseline justify-center gap-2 whitespace-nowrap">
+        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-white">{{
+          formatPrice(props.plan.price)
+        }}</span>
+        <span class="text-(--text-muted) text-sm">/{{ props.plan.period }}</span>
+      </div>
+    </div>
+
+    <div class="space-y-3 mb-8">
+      <div
+        v-for="feature in props.plan.features"
+        :key="feature"
+        v-animateonscroll="{ enterClass: 'animate-fadeinleft', leaveClass: 'animate-fadeout' }"
+        class="flex items-start gap-3"
+      >
+        <i class="pi pi-check-circle text-(--primary) mt-0.5 shrink-0"></i>
+        <span class="text-(--text-secondary) text-sm">{{ feature }}</span>
+      </div>
+    </div>
+
+    <div class="mt-auto">
+      <Button
+        v-if="props.showCta"
+        label="Daftar Sekarang"
+        class="w-full py-3.5 text-base font-semibold"
+        @click="onSignup"
+      />
+    </div>
+  </div>
+</template>
